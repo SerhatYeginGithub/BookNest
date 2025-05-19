@@ -145,7 +145,7 @@ public class Repository<TEntity> : IRepository<TEntity>
     public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> expression)
     {
         return Entity.AsNoTracking()
-            // .Where(x => !EF.Property<bool>(x, "IsDeleted"))
+            .Where(x => !EF.Property<bool>(x, "IsDeleted"))
             .Where(expression).AsQueryable();
     }
 

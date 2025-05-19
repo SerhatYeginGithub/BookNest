@@ -1,8 +1,9 @@
-﻿using System.Globalization;
+﻿using BookNest.Domain.Dtos;
+using MediatR;
 
-namespace BookNest.Application.Features.AuthFeatures.Commands.LoginCommand;
+namespace BookNest.Application.Features.AuthFeatures.Commands.RegisterCommand;
 
-public sealed record RegisterCommand 
+public sealed record RegisterCommand : IRequest<MessageResponse>
 {
     public string Email { get; set; }
     public string Password { get; set; }

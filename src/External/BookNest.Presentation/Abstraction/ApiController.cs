@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookNest.Presentation.Abstraction;
@@ -8,4 +9,10 @@ namespace BookNest.Presentation.Abstraction;
 //[Authorize(AuthenticationSchemes = "Bearer")]
 public abstract class ApiController : ControllerBase
 {
+    internal readonly IMediator _mediator;
+
+    public ApiController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
 }
