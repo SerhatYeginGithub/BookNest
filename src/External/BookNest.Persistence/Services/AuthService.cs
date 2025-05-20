@@ -6,6 +6,9 @@ using BookNest.Application.Features.AuthFeatures.Commands.RegisterCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.VerifyCodeCommand;
 using BookNest.Application.Services;
 using BookNest.Domain.Entities;
+using BookNest.Domain.Enums;
+using BookNest.Domain.Helpers;
+using BookNest.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -14,19 +17,23 @@ namespace BookNest.Persistence.Services;
 
 public sealed class AuthService : IAuthService
 {
+    private readonly AppDbContext _context;
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
     private readonly IMapper _mapper;
     private readonly IMailSender _mailSender;
     private readonly IMemoryCache _cache;
     private readonly IJwtProvider _jwtProvider;
 
-    public AuthService(UserManager<AppUser> userManager, IMapper mapper, IMailSender mailSender, IMemoryCache cache, IJwtProvider jwtProvider)
+    public AuthService(UserManager<AppUser> userManager, IMapper mapper, IMailSender mailSender, IMemoryCache cache, IJwtProvider jwtProvider, RoleManager<AppRole> roleManager, AppDbContext context)
     {
         _userManager = userManager;
         _mapper = mapper;
         _mailSender = mailSender;
         _cache = cache;
         _jwtProvider = jwtProvider;
+        _roleManager = roleManager;
+        _context = context;
     }
 
     public async Task<LoginResponse> LoginAsync(LoginCommand request, CancellationToken cancellationToken = default)
@@ -76,17 +83,35 @@ public sealed class AuthService : IAuthService
 
             if (storedCode == request.Code)
             {
-                _cache.Remove(registerRequest.Email);
-
-                AppUser user = _mapper.Map<AppUser>(registerRequest);
-
-                IdentityResult result = await _userManager.CreateAsync(user, registerRequest.Password);
-
-                if (!result.Succeeded)
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    throw new Exception(result.Errors.First().Description);
-                }
+                   
+                    AppUser user = _mapper.Map<AppUser>(registerRequest);
 
+                    IdentityResult result = await _userManager.CreateAsync(user, registerRequest.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        throw new Exception(result.Errors.First().Description);
+                    }
+
+                    var userRoleResult = await _userManager.AddToRoleAsync(user, RoleHelper.GetRoleString(Role.User));
+                    if (!userRoleResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        throw new Exception(userRoleResult.Errors.First().Description);
+                    }
+                    await transaction.CommitAsync();
+
+                    _cache.Remove(registerRequest.Email);
+
+                } catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             }
             else
             {
