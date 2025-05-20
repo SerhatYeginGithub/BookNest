@@ -1,6 +1,7 @@
 ﻿using BookNest.Application.Dtos.Book;
 using BookNest.Application.Dtos.Pagination;
 using BookNest.Application.Features.BookFeatures.Commands.CreateBookCommand;
+using BookNest.Application.Features.BookFeatures.Commands.DeleteBookCommand;
 using BookNest.Application.Features.BookFeatures.Commands.UpdateBookCommand;
 using BookNest.Application.Features.BookFeatures.Queries.GetAllBooksQuery;
 using BookNest.Application.Features.BookFeatures.Queries.GetBookByIdQuery;
@@ -13,4 +14,7 @@ public interface IBookService
     Task UpdateAsync(UpdateBookCommand request, CancellationToken cancellationToken = default);
     Task<PaginatedBooksResponse<GetAllBooksResponse>> GetAllBooksAsync(GetAllBooksQuery request, CancellationToken cancellationToken = default);
     Task<BookDetailDto> GetBookByIdAsync(GetBookByIdQuery request, CancellationToken cancellationToken = default);
+
+    Task HardDeleteAsync(DeleteBookCommand request, CancellationToken cancellationToken = default);
+    Task SoftDeleteAsync(DeleteBookCommand request, CancellationToken cancellationToken = default);
 }

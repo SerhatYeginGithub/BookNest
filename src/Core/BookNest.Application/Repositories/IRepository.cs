@@ -28,7 +28,7 @@ public interface IRepository<TEntity>
     void AddRange(ICollection<TEntity> entities);
     void Update(TEntity entity);
     void UpdateRange(ICollection<TEntity> entities);
-    Task DeleteByIdAsync(string id);
+    Task DeleteByIdAsync(Guid id);
     Task DeleteByExpressionAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default);
     void Delete(TEntity entity);
     void DeleteRange(ICollection<TEntity> entities);

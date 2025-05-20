@@ -1,4 +1,5 @@
 ﻿using BookNest.Application.Features.BookFeatures.Commands.CreateBookCommand;
+using BookNest.Application.Features.BookFeatures.Commands.DeleteBookCommand;
 using BookNest.Application.Features.BookFeatures.Commands.UpdateBookCommand;
 using BookNest.Application.Features.BookFeatures.Queries.GetAllBooksQuery;
 using BookNest.Application.Features.BookFeatures.Queries.GetBookByIdQuery;
@@ -45,6 +46,15 @@ public sealed class BooksController : ApiController
     {
         var request = new GetBookByIdQuery(bookId);
         var response = await _mediator.Send(request,cancellationToken);
+
+        return Ok(response);
+    }
+
+    [HttpDelete("[Action]")]
+    public async Task<IActionResult> DeleteBook(Guid Id, CancellationToken cancellationToken)
+    {
+        var request = new DeleteBookCommand(Id);
+        var response = await _mediator.Send(request, cancellationToken);
 
         return Ok(response);
     }

@@ -11,6 +11,7 @@ using BookNest.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using BookNest.Domain.Enums;
 using BookNest.Application.Dtos.Pagination;
+using BookNest.Application.Features.BookFeatures.Commands.DeleteBookCommand;
 
 namespace BookNest.Persistence.Services;
 
@@ -67,6 +68,26 @@ public sealed class BookService : IBookService
         return _mapper.Map<BookDetailDto>(book);
     }
 
+    public async Task HardDeleteAsync(DeleteBookCommand request, CancellationToken cancellationToken = default)
+    {
+        await _bookRepository.DeleteByIdAsync(request.Id);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task SoftDeleteAsync(DeleteBookCommand request, CancellationToken cancellationToken = default)
+    {
+        Book book = await _bookRepository.GetByExpressionAsync(b => b.Id == request.Id);
+
+        if(book is null)
+            throw new Exception("Book is not available.");
+
+        book.IsDeleted = true;
+
+        _bookRepository.Update(book);
+        await _unitOfWork.SaveChangesAsync();
+
+    }
+
     public async Task UpdateAsync(UpdateBookCommand request, CancellationToken cancellationToken = default)
     {
         await IsBookExist(request.AppUserId, request.Title);
@@ -84,6 +105,14 @@ public sealed class BookService : IBookService
 
         if (isExist)
             throw new Exception("Book is available.");
+    }
+    private async Task IsBookExist(Guid bookId)
+    {
+        var isExist = await _bookRepository.AnyAsync(b =>
+          b.Id == bookId);
+
+        if (!isExist)
+            throw new Exception("Book is not available.");
     }
 }
 

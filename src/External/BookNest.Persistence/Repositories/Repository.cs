@@ -53,9 +53,11 @@ public class Repository<TEntity> : IRepository<TEntity>
         Entity.Remove(entity);
     }
 
-    public async Task DeleteByIdAsync(string id)
+    public async Task DeleteByIdAsync(Guid id)
     {
         TEntity entity = await Entity.FindAsync(id);
+        if (entity == null)
+            throw new KeyNotFoundException($"Entity with id {id} not found.");
         Entity.Remove(entity);
     }
 
