@@ -1,9 +1,10 @@
-﻿using BookNest.Application.Services;
+﻿using BookNest.Application.Dtos.Pagination;
+using BookNest.Application.Services;
 using MediatR;
 
 namespace BookNest.Application.Features.BookFeatures.Queries.GetAllBooksQuery;
 
-internal sealed class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, IList<GetAllBooksResponse>>
+public sealed class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, PaginatedBooksResponse<GetAllBooksResponse>>
 {
     private readonly IBookService _bookService;
 
@@ -12,6 +13,6 @@ internal sealed class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery
         _bookService = bookService;
     }
 
-    public async Task<IList<GetAllBooksResponse>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken) =>
+    public async Task<PaginatedBooksResponse<GetAllBooksResponse>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken) =>
         await _bookService.GetAllBooksAsync(request, cancellationToken);
 }

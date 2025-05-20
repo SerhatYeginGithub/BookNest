@@ -1,4 +1,4 @@
-﻿using BookNest.Domain.Dtos;
+﻿using BookNest.Application.Dtos;
 using MediatR;
 
 namespace BookNest.Application.Features.AuthFeatures.Commands.RegisterCommand;

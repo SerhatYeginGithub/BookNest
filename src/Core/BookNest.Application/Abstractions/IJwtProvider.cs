@@ -1,4 +1,4 @@
-﻿using BookNest.Domain.Dtos;
+﻿using BookNest.Application.Dtos;
 using BookNest.Domain.Entities;
 
 namespace BookNest.Application.Abstractions;

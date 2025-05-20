@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BookNest.Domain\BookNest.Domain.csproj" />
+    <Folder Include="Features\AuthFeatures\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\AuthFeatures\Queries\" />
+    <ProjectReference Include="..\BookNest.Domain\BookNest.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using BookNest.Domain.Entities;
 using BookNest.Domain.Enums;
 
-namespace BookNest.Domain.Dtos.Book;
+namespace BookNest.Application.Dtos.Book;
 
 public sealed record BookDetailDto
 {
@@ -11,6 +11,6 @@ public sealed record BookDetailDto
     public string Description { get; set; }
     public string? Image { get; set; }
     public BookStatus Status { get; set; }
-    public Note? Note { get; set; }
-    public Rating? Rating { get; set; }
+    public ResultNoteDto? Note { get; set; }
+    public ResultRatingDto? Rating { get; set; }
 }

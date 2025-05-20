@@ -6,9 +6,11 @@ using BookNest.Application.Features.BookFeatures.Queries.GetBookByIdQuery;
 using BookNest.Application.Repositories;
 using BookNest.Application.Services;
 using BookNest.Application.UnitOfWorks;
-using BookNest.Domain.Dtos.Book;
+using BookNest.Application.Dtos.Book;
 using BookNest.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using BookNest.Domain.Enums;
+using BookNest.Application.Dtos.Pagination;
 
 namespace BookNest.Persistence.Services;
 
@@ -34,15 +36,29 @@ public sealed class BookService : IBookService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IList<GetAllBooksResponse>> GetAllBooksAsync(GetAllBooksQuery request, CancellationToken cancellationToken = default)
+    public async Task<PaginatedBooksResponse<GetAllBooksResponse>> GetAllBooksAsync(GetAllBooksQuery request, CancellationToken cancellationToken = default)
     {
-        var books = await _bookRepository
-         .Where(p => p.AppUserId == request.UserId)
-         .ToListAsync(cancellationToken);
+        var query = _bookRepository.Where(p => p.AppUserId == request.UserId);
 
-        var response = _mapper.Map<List<GetAllBooksResponse>>(books);
+        if (request.Status.HasValue)
+        {
+            query = query.Where(p => p.Status == request.Status.Value);
+        }
 
-        return response;
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var books = await query
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToListAsync(cancellationToken);
+      
+        return new PaginatedBooksResponse<GetAllBooksResponse>
+        {
+            TotalCount = totalCount,
+            PageNumber = request.Page,
+            Items = _mapper.Map<List<GetAllBooksResponse>>(books)
+        };
+
     }
 
     public async Task<BookDetailDto> GetBookByIdAsync(GetBookByIdQuery request, CancellationToken cancellationToken = default)

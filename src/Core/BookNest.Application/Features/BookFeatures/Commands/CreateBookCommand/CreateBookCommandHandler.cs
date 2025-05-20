@@ -1,10 +1,10 @@
-﻿using BookNest.Application.Services;
-using BookNest.Domain.Dtos;
+﻿using BookNest.Application.Dtos;
+using BookNest.Application.Services;
 using MediatR;
 
 namespace BookNest.Application.Features.BookFeatures.Commands.CreateBookCommand;
 
-internal sealed class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, MessageResponse>
+public sealed class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, MessageResponse>
 {
     private readonly IBookService _bookService;
 

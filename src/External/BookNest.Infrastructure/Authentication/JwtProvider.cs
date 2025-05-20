@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using BookNest.Application.Abstractions;
 using BookNest.Domain.Entities;
-using BookNest.Domain.Dtos;
+using BookNest.Application.Dtos;
 
 namespace BookNest.Infrastructure.Authentication;
 

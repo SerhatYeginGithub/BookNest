@@ -1,10 +1,10 @@
 ﻿using BookNest.Application.Services;
-using BookNest.Domain.Dtos.Book;
+using BookNest.Application.Dtos.Book;
 using MediatR;
 
 namespace BookNest.Application.Features.BookFeatures.Queries.GetBookByIdQuery;
 
-internal class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, BookDetailDto>
+public sealed class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, BookDetailDto>
 {
     private readonly IBookService _bookService;
 

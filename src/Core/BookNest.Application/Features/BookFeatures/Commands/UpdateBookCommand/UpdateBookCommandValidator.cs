@@ -2,7 +2,7 @@
 
 namespace BookNest.Application.Features.BookFeatures.Commands.UpdateBookCommand;
 
-internal sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
+public sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
 {
     public UpdateBookCommandValidator()
     {

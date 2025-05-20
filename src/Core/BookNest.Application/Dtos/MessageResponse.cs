@@ -1,3 +1,3 @@
-﻿namespace BookNest.Domain.Dtos;
+﻿namespace BookNest.Application.Dtos;
 
 public sealed record MessageResponse(string Message);

@@ -1,7 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using BookNest.Application.Services;
-using BookNest.Domain.Dtos;
+using BookNest.Application.Dtos;
 using Microsoft.Extensions.Options;
 
 namespace BookNest.Infrastructure.Services;

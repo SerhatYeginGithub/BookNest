@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BookNest.Application.Abstractions;
+using BookNest.Application.Dtos;
 using BookNest.Application.Features.AuthFeatures.Commands.LoginCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.RegisterCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.VerifyCodeCommand;
 using BookNest.Application.Services;
-using BookNest.Domain.Dtos;
 using BookNest.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -2,7 +2,7 @@
 
 namespace BookNest.Application.Features.BookFeatures.Commands.CreateBookCommand;
 
-internal class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
+public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
 {
     public CreateBookCommandValidator()
     {

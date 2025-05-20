@@ -2,6 +2,7 @@
 using BookNest.Application.Features.BookFeatures.Commands.UpdateBookCommand;
 using BookNest.Application.Features.BookFeatures.Queries.GetAllBooksQuery;
 using BookNest.Application.Features.BookFeatures.Queries.GetBookByIdQuery;
+using BookNest.Domain.Enums;
 using BookNest.Presentation.Abstraction;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,9 +31,9 @@ public sealed class BooksController : ApiController
     }
 
     [HttpGet("[Action]")]
-    public async Task<IActionResult> GetAllBooks(Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllBooks(Guid userId, int page, int pageSize, BookStatus? bookStatus,  CancellationToken cancellationToken)
     {
-        var request = new GetAllBooksQuery(userId);
+        var request = new GetAllBooksQuery(userId, bookStatus, page, pageSize);
 
         var response = await _mediator.Send(request, cancellationToken);
 

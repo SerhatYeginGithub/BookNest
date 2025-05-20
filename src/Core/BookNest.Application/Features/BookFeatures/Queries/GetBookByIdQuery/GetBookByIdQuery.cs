@@ -1,4 +1,4 @@
-﻿using BookNest.Domain.Dtos.Book;
+﻿using BookNest.Application.Dtos.Book;
 using MediatR;
 
 namespace BookNest.Application.Features.BookFeatures.Queries.GetBookByIdQuery;

@@ -1,10 +1,10 @@
-﻿using BookNest.Application.Services;
-using BookNest.Domain.Dtos;
+﻿using BookNest.Application.Dtos;
+using BookNest.Application.Services;
 using MediatR;
 
 namespace BookNest.Application.Features.BookFeatures.Commands.UpdateBookCommand;
 
-internal sealed class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, MessageResponse>
+public sealed class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, MessageResponse>
 {
     private readonly IBookService _bookService;
 

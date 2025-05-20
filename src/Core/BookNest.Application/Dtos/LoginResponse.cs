@@ -1,4 +1,4 @@
-﻿namespace BookNest.Domain.Dtos;
+﻿namespace BookNest.Application.Dtos;
 
 public sealed record LoginResponse(
  string Token,
