@@ -26,6 +26,7 @@ public static class Registration
         /// Services 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IBookService, BookService>();
+        services.AddScoped<INoteService, NoteService>();
 
         services.AddAutoMapper(typeof(AssemblyReference).Assembly);
     }

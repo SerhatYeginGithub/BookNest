@@ -1,4 +1,5 @@
-﻿using BookNest.Application.Features.AuthFeatures.Commands.LoginCommand;
+﻿using BookNest.Application.Features.AuthFeatures.Commands.CreateTokenByRefreshTokenCommand;
+using BookNest.Application.Features.AuthFeatures.Commands.LoginCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.RegisterCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.VerifyCodeCommand;
 using BookNest.Presentation.Abstraction;
@@ -37,4 +38,14 @@ public sealed class AuthController : ApiController
         var response = await _mediator.Send(request, cancellationToken);
         return Ok(response);
     }
+
+    [HttpPost("[Action]")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateTokenByRefreshToken(CreateTokenByRefreshTokenCommand request, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(request, cancellationToken);
+
+        return Ok(response);
+    }
+
 }

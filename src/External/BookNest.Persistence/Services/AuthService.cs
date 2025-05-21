@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using BookNest.Application.Abstractions;
 using BookNest.Application.Dtos;
+using BookNest.Application.Features.AuthFeatures.Commands.CreateTokenByRefreshTokenCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.LoginCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.RegisterCommand;
 using BookNest.Application.Features.AuthFeatures.Commands.VerifyCodeCommand;
 using BookNest.Application.Services;
+using BookNest.Domain.Constants;
 using BookNest.Domain.Entities;
-using BookNest.Domain.Enums;
-using BookNest.Domain.Helpers;
 using BookNest.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +36,26 @@ public sealed class AuthService : IAuthService
         _context = context;
     }
 
+    public async Task<LoginResponse> CreateTokenByRefreshTokenAsync(CreateTokenByRefreshTokenCommand request, CancellationToken cancellationToken = default)
+    {
+        AppUser user = await _userManager.FindByIdAsync(request.UserId.ToString());
+        if (user == null) 
+            throw new Exception("User not found!");
+
+        if (user.RefreshToken != request.RefreshToken)
+            throw new Exception("Invalid refresh token");
+
+        if (user.RefreshTokenExpires < DateTime.Now)
+            throw new Exception("Invalid Refresh Token");
+        var roles = await _userManager.GetRolesAsync(user);
+        if (roles == null || !roles.Any())
+            throw new InvalidOperationException("User does not have any assigned roles.");
+
+        var role = roles.First();
+        LoginResponse response = await _jwtProvider.CreateTokenAsync(user, role);
+        return response;
+    }
+
     public async Task<LoginResponse> LoginAsync(LoginCommand request, CancellationToken cancellationToken = default)
     {
         AppUser? user =
@@ -48,9 +68,11 @@ public sealed class AuthService : IAuthService
         if (user == null) throw new Exception("User can not found");
 
         var result = await _userManager.CheckPasswordAsync(user, request.Password);
-        if (result)
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault();
+        if (result && role is not null)
         {
-            LoginResponse response = await _jwtProvider.CreateTokenAsync(user);
+            LoginResponse response = await _jwtProvider.CreateTokenAsync(user, role);
             return response;
         }
 
@@ -97,7 +119,7 @@ public sealed class AuthService : IAuthService
                         throw new Exception(result.Errors.First().Description);
                     }
 
-                    var userRoleResult = await _userManager.AddToRoleAsync(user, RoleHelper.GetRoleString(Role.User));
+                    var userRoleResult = await _userManager.AddToRoleAsync(user, Role.User);
                     if (!userRoleResult.Succeeded)
                     {
                         await transaction.RollbackAsync();

@@ -52,7 +52,7 @@ public sealed class BookService : IBookService
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(cancellationToken);
-      
+
         return new PaginatedBooksResponse<GetAllBooksResponse>
         {
             TotalCount = totalCount,
@@ -64,7 +64,12 @@ public sealed class BookService : IBookService
 
     public async Task<BookDetailDto> GetBookByIdAsync(GetBookByIdQuery request, CancellationToken cancellationToken = default)
     {
-        Book book = await _bookRepository.GetByExpressionAsync(b => b.Id == request.BookId);
+        var book = await _bookRepository
+            .WhereWithTracking(b => b.Id == request.BookId)
+            .Include(b => b.Note)
+            .Include(b => b.Rating)
+            .FirstOrDefaultAsync(cancellationToken);
+
         return _mapper.Map<BookDetailDto>(book);
     }
 
@@ -78,7 +83,7 @@ public sealed class BookService : IBookService
     {
         Book book = await _bookRepository.GetByExpressionAsync(b => b.Id == request.Id);
 
-        if(book is null)
+        if (book is null)
             throw new Exception("Book is not available.");
 
         book.IsDeleted = true;

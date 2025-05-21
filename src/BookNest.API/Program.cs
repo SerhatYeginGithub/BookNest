@@ -54,6 +54,7 @@ builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.AddAuthorization();
+//builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ExceptionMiddleware>();
 
 

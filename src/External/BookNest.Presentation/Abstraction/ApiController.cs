@@ -6,7 +6,7 @@ namespace BookNest.Presentation.Abstraction;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(AuthenticationSchemes = "Bearer")]
+[Authorize(AuthenticationSchemes = "Bearer")]
 public abstract class ApiController : ControllerBase
 {
     internal readonly IMediator _mediator;

@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using BookNest.Application.Abstractions;
 using BookNest.Domain.Entities;
 using BookNest.Application.Dtos;
+using BookNest.Domain.Enums;
 
 namespace BookNest.Infrastructure.Authentication;
 
@@ -21,14 +22,15 @@ public sealed class JwtProvider : IJwtProvider
         _userManager = userManager;
     }
 
-    public async Task<LoginResponse> CreateTokenAsync(AppUser user)
+    public async Task<LoginResponse> CreateTokenAsync(AppUser user, string role)
     {
         var claims = new Claim[]
         {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-                new Claim("NameLastName", $"{user.Name} {user.Lastname}")
+                new Claim("NameLastName", $"{user.Name} {user.Lastname}"),
+                new Claim("UserRole", role)
         };
 
         DateTime expires = DateTime.Now.AddMinutes(1);
